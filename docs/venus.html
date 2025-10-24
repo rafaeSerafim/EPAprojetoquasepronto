@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ET LYRIS | Assistente de IA</title>
+    <!-- Carrega Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Carrega a fonte Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <!-- Carrega os estilos personalizados (path ajustado) -->
+    <link rel="stylesheet" href="./ets/style.css">
+</head>
+<body class="h-screen flex flex-col bg-black">
+
+    <!-- Navbar / Header Fixo -->
+    <header class="fixed top-0 left-0 w-full bg-[#000000] border-b border-[#1A1F3A] shadow-lg z-50">
+        <div class="flex w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Coluna da Imagem (Vazia no Header para Alinhamento) -->
+            <div class="hidden md:block w-1/4 flex-shrink-0"></div>
+            
+            <!-- Coluna do Chat (Conteúdo do Header) -->
+            <div class="w-full md:w-3/4 flex justify-between items-center py-3 relative">
+                
+                <!-- Botão Voltar para a Página Principal -->
+                <button id="backButton" class="text-[#f0f5fb] hover:text-[#7a6cf6] transition duration-300 flex items-center space-x-2 p-1 rounded-md hover:bg-[#1A1F3A]">
+                    <!-- Ícone de seta para trás (SVG) -->
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
+                    </svg>
+                    <span class="hidden sm:inline text-sm font-medium">Voltar</span>
+                </button>
+                
+                <div class="flex items-center space-x-3 absolute left-1/2 transform -translate-x-1/2">
+                    <div class="h-8 w-8 rounded-full bg-[#7a6cf6] flex items-center justify-center text-lg font-bold text-[#000000]">L</div>
+                    <h1 class="text-xl font-semibold tracking-wider uppercase text-[#f0f5fb] hidden sm:inline">LYRIS<span class="text-[#7a6cf6] font-extrabold text-2xl">|</span> <span class="text-sm font-light text-[#8ea1b8]">Sua Et</span></h1>
+                    <h1 class="text-xl font-semibold tracking-wider uppercase text-[#f0f5fb] sm:hidden">LYRIS</h1>
+                </div>
+                
+                <div class="text-sm text-[#8ea1b8]">
+                    Status: <span class="text-green-400 font-medium">Online</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Área Principal do Chat (Centralizada) -->
+    <main class="flex-grow pt-[80px] pb-[100px] w-full mx-auto overflow-hidden">
+        
+        <div class="flex h-full w-full max-w-7xl mx-auto">
+            
+            <!-- 1. ET Lyris Grande (Lado Esquerdo, Desktop Only) -->
+            <div class="hidden md:flex flex-col items-center justify-center p-8 w-1/4 flex-shrink-0">
+                
+                <div class="w-full max-w-xs rounded-xl bg-gradient-to-br from-[#1A1F3A] to-[#000000] p-1 border-4 border-[#7a6cf6] shadow-2xl">
+                    
+                    <img id="largeAvatar" 
+                        src="./images/laisEt.jpg" 
+                        alt="Avatar Grande da ET Lyris" 
+                        class="w-full h-auto object-contain rounded-lg"
+                       
+                    >
+                </div>
+                <p class="text-xs text-[#8ea1b8] mt-4 text-center">
+                    ET Lyris
+                </p>
+            </div>
+
+            <!-- 2. Coluna do Chat (Lado Direito) -->
+            <div class="w-full md:w-3/4 h-full px-4 sm:px-6 lg:px-8">
+                <!-- Histórico do Chat -->
+                <div id="chatHistory" class="chat-history-container h-full overflow-y-auto space-y-6 pt-4">
+                    
+                    <!-- Indicador de Carregamento/Digitação -->
+                    <div id="typingIndicator" class="hidden flex items-start justify-start mb-3">
+                        <!-- Imagem do Avatar Pequeno com Fallback -->
+                        <img id="typingAvatar" src="./images/laisEt.jpg" alt="Avatar da ET Lyris" class="w-8 h-8 rounded-full flex-shrink-0 mt-1 object-cover border-2 border-[#7a6cf6] mr-3" onerror="this.onerror=null;this.src='https://placehold.co/32x32/7a6cf6/000000?text=L';">
+                        <div class="flex items-center bot-bubble p-3">
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Área de Input (Fixa no Fundo) -->
+    <footer class="fixed bottom-0 left-0 w-full bg-[#000000] border-t border-[#1A1F3A] p-4 z-50">
+        <div class="flex w-full max-w-7xl mx-auto">
+            <!-- Coluna da Imagem (Vazia no Footer para Alinhamento) -->
+            <div class="hidden md:block w-1/4 flex-shrink-0"></div>
+            
+            <!-- Coluna do Chat (Conteúdo do Input) -->
+            <div class="w-full md:w-3/4 flex items-center space-x-3 px-4 sm:px-6 lg:px-8">
+                <input 
+                    type="text" 
+                    id="userInput" 
+                    placeholder="Faça uma pergunta para Lyris..." 
+                    class="flex-grow p-3 rounded-full bg-[#1A1F3A] text-[#f0f5fb] border border-[#7a6cf640] focus:outline-none focus:ring-2 focus:ring-[#7a6cf6] text-base placeholder-[#8ea1b8] transition duration-300" 
+                />
+                <!-- Botão de Envio com o novo primary-accent -->
+                <button 
+                    id="sendButton" 
+                    class="p-3 rounded-full bg-[#7a6cf6] text-white hover:bg-[#6c6cf3] transition duration-300 shadow-md disabled:bg-gray-600 disabled:cursor-not-allowed"
+                    aria-label="Enviar Mensagem"
+                >
+                    <!-- Ícone de Enviar (SVG para profissionalismo) -->
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 00.183 1.404l.01.01a1 1 0 001.4-.183L10 5.432l6.292 12.342a1 1 0 001.583-.223l7-14a1 1 0 00-.183-1.404z" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Carrega a lógica do chat -->
+    <script src="./ets/script.js"></script>
+</body>
+</html>
