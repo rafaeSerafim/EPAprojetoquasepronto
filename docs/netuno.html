@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ET ZYRAC | Assistente de IA</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        .chat-history-container {
+            scroll-behavior: smooth;
+        }
+
+        .chat-bubble {
+            max-width: 80%;
+            padding: 10px 14px;
+            border-radius: 20px;
+            font-size: 1rem;
+            line-height: 1.4;
+            word-wrap: break-word;
+        }
+
+        .bot-message .chat-bubble {
+            background-color: #1A1F3A; 
+            color: #f0f5fb;
+            border-bottom-left-radius: 4px;
+            margin-right: auto;
+        }
+
+        .user-message {
+            display: flex;
+            justify-content: flex-end;
+        }
+        .user-message .chat-bubble {
+            background-color: #7a6cf6;
+            color: white;
+            border-bottom-right-radius: 4px;
+            margin-left: auto;
+        }
+
+        .bot-bubble {
+            background-color: #1A1F3A; 
+            border-radius: 20px 20px 20px 4px;
+            display: flex;
+            align-items: center;
+            padding: 10px 14px;
+        }
+        .dot {
+            width: 8px;
+            height: 8px;
+            background-color: #f0f5fb;
+            border-radius: 50%;
+            margin: 0 4px;
+            animation: dot-blink 1.5s infinite;
+        }
+        .dot:nth-child(2) {
+            animation-delay: 0.5s;
+        }
+        .dot:nth-child(3) {
+            animation-delay: 1s;
+        }
+
+        @keyframes dot-blink {
+            0%, 80%, 100% { opacity: 0; }
+            40% { opacity: 1; }
+        }
+    </style>
+</head>
+
+<body class="h-screen flex flex-col bg-black" style="font-family: 'Inter', sans-serif;">
+
+    <header class="fixed top-0 left-0 w-full bg-[#000000] border-b border-[#1A1F3A] shadow-lg z-50">
+        <div class="flex w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="hidden md:block w-1/4 flex-shrink-0"></div>
+            <div class="w-full md:w-3/4 flex justify-between items-center py-3 relative">
+                <button id="backButton" class="text-[#f0f5fb] hover:text-[#7a6cf6] transition duration-300 flex items-center space-x-2 p-1 rounded-md hover:bg-[#1A1F3A]">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+        <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
+    </svg>
+    <span class="hidden sm:inline text-sm font-medium">Voltar</span>
+</button>
+                <div class="flex items-center space-x-3 absolute left-1/2 transform -translate-x-1/2">
+                    <h1 class="text-xl font-semibold tracking-wider uppercase text-[#f0f5fb] hidden sm:inline">ZYRAC <span class="text-[#7a6cf6] font-extrabold text-2xl">|</span> <span class="text-sm font-light text-[#8ea1b8]">Seu ET</span></h1>
+                    <h1 class="text-xl font-semibold tracking-wider uppercase text-[#f0f5fb] sm:hidden">ZYRAC</h1>
+                </div>
+                <div class="text-sm text-[#8ea1b8]">
+                    Status: <span class="text-green-400 font-medium">Online</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow pt-[80px] pb-[100px] w-full mx-auto overflow-hidden">
+        <div class="flex h-full w-full max-w-7xl mx-auto">
+            <div class="hidden md:flex flex-col items-center justify-center p-8 w-1/4 flex-shrink-0">
+                <div class="w-full max-w-xs rounded-xl bg-gradient-to-br from-[#1A1F3A] to-[#000000] p-1 border-4 border-[#7a6cf6] shadow-2xl">
+                    <img id="largeAvatar" 
+                        src="./images/isaacEt.jpg" 
+                        class="rounded-lg object-cover w-full h-auto"
+                        
+                    >
+                </div>
+                <p class="text-xs text-[#8ea1b8] mt-4 text-center">
+                    (Seu ET - ET Zyrac)
+                </p>
+            </div>
+
+            <div class="w-full md:w-3/4 h-full px-4 sm:px-6 lg:px-8">
+                <div id="chatHistory" class="chat-history-container h-full overflow-y-auto space-y-6 pt-4">
+                    
+                    <div class="flex items-start justify-start bot-message">
+                        <img src="./images/isaacEt.jpg" alt="Avatar do ET Zyrac" class="w-8 h-8 rounded-full flex-shrink-0 mt-1 object-cover border-2 border-[#7a6cf6] mr-3" onerror="this.onerror=null;this.src='https://placehold.co/32x32/7a6cf6/000000?text=Z';">
+                        <div class="chat-bubble">
+                            Ah, o humano. Eu sou Zyrac, um ser superior. Vá em frente, pergunte algo. Duvido que seja capaz de me surpreender.
+                        </div>
+                    </div>
+
+                    <div id="typingIndicator" class="hidden flex items-start justify-start mb-3">
+                        <img src="./images/isaacEt.jpg" alt="Avatar do ET Zyrac" class="w-8 h-8 rounded-full flex-shrink-0 mt-1 object-cover border-2 border-[#7a6cf6] mr-3" onerror="this.onerror=null;this.src='https://placehold.co/32x32/7a6cf6/000000?text=Z';">
+                        <div class="bot-bubble">
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="fixed bottom-0 left-0 w-full bg-[#000000] border-t border-[#1A1F3A] p-4 z-50">
+        <div class="flex w-full max-w-7xl mx-auto">
+            <div class="hidden md:block w-1/4 flex-shrink-0"></div>
+            <div class="w-full md:w-3/4 flex items-center space-x-3 px-4 sm:px-6 lg:px-8">
+                <input 
+                    type="text" 
+                    id="userInput" 
+                    placeholder="Faça uma pergunta para Zyrac..." 
+                    class="flex-grow p-3 rounded-full bg-[#1A1F3A] text-[#f0f5fb] border border-[#7a6cf640] focus:outline-none focus:ring-2 focus:ring-[#7a6cf6] text-base placeholder-[#8ea1b8] transition duration-300" 
+                />
+                
+                <button 
+                    id="sendButton" 
+                    class="p-3 rounded-full bg-[#7a6cf6] text-white hover:bg-[#6c6cf3] transition duration-300 shadow-md disabled:bg-gray-600 disabled:cursor-not-allowed"
+                    aria-label="Enviar Mensagem"
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 00.183 1.404l.01.01a1 1 0 001.4-.183L10 5.432l6.292 12.342a1 1 0 001.583-.223l7-14a1 1 0 00-.183-1.404z" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        
+        const API_KEY = "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";
+
+        const userInput = document.getElementById('userInput');
+        const sendButton = document.getElementById('sendButton');
+        const chatHistory = document.getElementById('chatHistory');
+        const typingIndicator = document.getElementById('typingIndicator');
+        const botAvatarSrc = './images/isaacEt.jpg'; 
+
+        function createMessageElement(message, isUser) {
+            const container = document.createElement('div');
+            container.className = `flex items-start mb-3 ${isUser ? 'justify-end user-message' : 'justify-start bot-message'}`;
+
+            const bubble = document.createElement('div');
+            bubble.className = 'chat-bubble';
+            bubble.textContent = message;
+
+            if (isUser) {
+    
+                container.appendChild(bubble);
+            } else {
+
+                const avatar = document.createElement('img');
+                avatar.src = botAvatarSrc;
+                avatar.alt = 'Avatar do ET Zyrac';
+                avatar.className = 'w-8 h-8 rounded-full flex-shrink-0 mt-1 object-cover border-2 border-[#7a6cf6] mr-3';
+                avatar.onerror = function() { this.onerror=null; this.src='https://placehold.co/32x32/7a6cf6/000000?text=Z'; };
+
+                container.appendChild(avatar);
+                container.appendChild(bubble);
+            }
+
+            chatHistory.appendChild(container);
+            chatHistory.scrollTop = chatHistory.scrollHeight;
+            
+            return container;
+        }
+
+        async function enviar() {
+            const pergunta = userInput.value.trim();
+            if (!pergunta) return;
+
+            userInput.disabled = true;
+            sendButton.disabled = true;
+
+            createMessageElement(pergunta, true);
+
+            userInput.value = '';
+
+            typingIndicator.classList.remove('hidden');
+            chatHistory.scrollTop = chatHistory.scrollHeight;
+
+            try {
+                const res = await fetch("https://api.openai.com/v1/chat/completions", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${API_KEY}`
+                    },
+                    body: JSON.stringify({
+                        model: "gpt-4o-mini",
+                        messages: [
+                            { role: "system", content: "Interprete o personagem Zyrac, um alienígena altamente inteligente e arrogante, que se acha superior, porém com respostas informais, não use emoticons" },
+                           
+                            { role: "user", content: pergunta }
+                        ],
+                        max_tokens: 150
+                    })
+                });
+
+                typingIndicator.classList.add('hidden');
+                
+                if (!res.ok) {
+                    throw new Error(`Erro na API: ${res.status}`);
+                }
+
+                const data = await res.json();
+                const respostaDoBot = data.choices[0].message.content;
+
+                createMessageElement(respostaDoBot, false);
+
+            } catch (error) {
+                console.error("Erro na comunicação com a API:", error);
+
+                typingIndicator.classList.add('hidden');
+          
+                createMessageElement("Ops! Minha nave de comunicação falhou. A comunicação com seres inferiores é sempre um desafio. 🛸", false);
+            } finally {
+
+                userInput.disabled = false;
+                sendButton.disabled = false;
+                userInput.focus();
+            }
+        }
+
+        sendButton.addEventListener('click', enviar);
+
+        userInput.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter' && !sendButton.disabled) {
+                event.preventDefault();
+                enviar();
+            }
+        });
+
+        window.onload = () => {
+             userInput.focus();
+        };
+        
+    document.getElementById('backButton').addEventListener('click', () => {
+        window.location.href = 'index.html';
+    });
+
+
+
+    </script>
+</body>
+</html>
